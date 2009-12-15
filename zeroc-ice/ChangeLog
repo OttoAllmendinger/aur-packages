@@ -1,0 +1,8 @@
+2009-12-15 Otto Allmendinger <otto.allmendinger@gmail.com>
+
+	* 3.3.1-2 :
+
+	Added cpp and python support since these two compile fine and without many
+	dependencies. 
+
+	Ruby support fails because of this bug: http://bugs.archlinux.org/task/16884

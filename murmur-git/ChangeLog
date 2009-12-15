@@ -1,0 +1,9 @@
+2009-12-15 Otto Allmendinger <otto.allmendinger@gmail.com>
+	* 20091214-3 :
+	added boost to makedepends
+
+	* 20091214-2 :
+	added ChangeLog
+	added post_upgrade() function
+	added x86_64 to arch
+	changed makedepends

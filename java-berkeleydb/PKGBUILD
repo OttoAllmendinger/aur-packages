@@ -1,0 +1,24 @@
+# $Id: PKGBUILD 356 2008-04-18 22:56:27Z aaron $
+# Maintainer: judd <jvinet@zeroflux.org>
+pkgname=java-berkeleydb
+pkgver=4.8.24
+pkgrel=1
+pkgdesc="Java bindings for the Berkeley DB embedded database system"
+arch=(i686 x86_64)
+license=('custom')
+url="http://www.oracle.com/technology/software/products/berkeley-db/index.html"
+groups=('base')
+depends=('gcc-libs' 'coreutils' 'jdk' 'db')
+options=('!libtool')
+source=(http://download-uk.oracle.com/berkeley-db/db-$pkgver.tar.gz)
+md5sums=('147afdecf438ff99ade105a5272db158')
+
+build() {
+  cd $startdir/src/db-$pkgver/build_unix
+  ../dist/configure --prefix=/usr --enable-compat185 \
+    --enable-shared --enable-static --enable-java
+  make LIBSO_LIBS=-lpthread || return 1
+
+  install -Dm644 db.jar $startdir/pkg/usr/share/java/berkeleydb/berkeleydb.jar
+  install -Dm644 libdb_java-4.8.la $startdir/pkg/usr/lib/libdb_java-4.8.la
+}

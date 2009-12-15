@@ -1,0 +1,19 @@
+# $Id: PKGBUILD 356 2008-04-18 22:56:27Z aaron $
+# Maintainer: Tom Burdick <thomas.burdick@gmail.com>
+pkgname=jgoodies-forms
+pkgver=1.2.1
+pkgrel=1
+pkgdesc="JGoodies Java Interface Design Library"
+arch=('i686' 'x86_64')
+license=('custom')
+url="http://www.jgoodies.com/index.html"
+groups=('base')
+depends=('jdk')
+source=('http://www.jgoodies.com/download/libraries/forms/forms-1_2_1.zip')
+md5sums=('e2bddfe17d87265c15747f4463d8d595')
+
+build() {
+    cd "$srcdir/forms-$pkgver"
+    install -D LICENSE.txt "$pkgdir/usr/share/licenses/LICENSE"
+    install -D forms-$pkgver.jar "$pkgdir/usr/share/java/$pkgname/$pkgname.jar"
+}

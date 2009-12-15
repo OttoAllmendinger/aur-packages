@@ -1,0 +1,65 @@
+# Contributor: Otto Allmendinger <otto.allmendinger@googlemail.com>
+
+_gitroot="git://mumble.git.sf.net/gitroot/mumble/mumble"
+_gitname="mumble"
+
+pkgname="murmur-git"
+pkgver="20091215"
+pkgrel=2
+pkgdesc="The voice chat application server for Mumble (git version)"
+arch=("i686" "x86_64")
+url="http://mumble.sourceforge.net"
+makedepends=("git" "gcc" "make" "boost")
+depends=("qt>=4.4.0" "libcap" "protobuf" "avahi" "pcre" "dbus-core" "openssl")
+conflicts=("murmur" "murmur-static" "murmur-ice")
+license=('GPL')
+
+source=("murmur.rc.d" "murmur.sh")
+install="murmur.install"
+md5sums=("e572449e26e3757c9d211b4cc0eb2bfd"
+         "f16e553656a374dc1a7d72ca90d96629")
+
+build() {
+    cd $srcdir
+
+    msg "Connecting to GIT Server..."
+
+    if [ -d $_gitname ]; then
+        cd $_gitname && git pull origin || return 1
+        msg "The local files are updated"
+    else
+        git clone $_gitroot || return 1
+    fi
+
+    [ -e "$srcdir/$_gitname-build" ] && rm -rf "$srcdir/$_gitname-build"
+
+    git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build" || return 1
+
+    cd "$srcdir/$_gitname-build"
+
+    msg "GIT checkout done"
+
+    # build
+
+    msg "Starting make..."
+
+    qmake main.pro CONFIG+="no-client no-ice"
+
+    make || return 1
+
+    sed -e "s|database=|database=/var/lib/murmur/murmur.sqlite|" \
+        -e "s|#logfile=murmur.log|logfile=/var/log/murmur.log|" \
+        -e "s|#pidfile=|pidfile=/var/run/murmur.pid|" \
+        -i scripts/murmur.ini || return 1
+
+    # install
+
+    install -Dm755 release/murmurd $pkgdir/usr/lib/murmur/murmur
+    install -Dm644 src/murmur/Murmur.ice $pkgdir/usr/lib/murmur/Murmur.ice
+    install -Dm644 scripts/murmur.ini $pkgdir/etc/murmur.ini
+    install -Dm644 README $pkgdir/usr/share/doc/murmur/README
+    install -Dm755 $startdir/murmur.sh $pkgdir/usr/sbin/murmur
+    install -Dm755 $startdir/murmur.rc.d $pkgdir/etc/rc.d/murmur
+    install -dm755 $pkgdir/var/lib/murmur
+
+}
