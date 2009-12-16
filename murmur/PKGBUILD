@@ -2,12 +2,12 @@
 
 pkgname="murmur"
 pkgver="1.2.0"
-pkgrel=4
+pkgrel=5
 pkgdesc="The voice chat application server for Mumble"
 arch=("i686" "x86_64")
 url="http://mumble.sourceforge.net"
-makedepends=("qt" "gcc" "make" "boost")
-depends=("qt>=4.4.0" "libcap" "protobuf" "avahi" "pcre" "dbus-core" "openssl")
+makedepends=("boost")
+depends=("avahi" "openssl" "protobuf" "pcre" "qt>=4.4.0")
 conflicts=("murmur-ice" "murmur-static" "murmur-git")
 license=("GPL")
 

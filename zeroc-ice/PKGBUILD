@@ -34,7 +34,7 @@ build() {
     # C++
     #
 
-    cd $startdir/src/Ice-$pkgver/cpp/src
+    cd $startdir/src/Ice-$pkgver/cpp
 
     rm -rf $_builddir
     mkdir $_builddir
@@ -49,6 +49,9 @@ build() {
 
     install -dm755 $pkgdir/usr/lib
     mv $_builddir/lib/* $pkgdir/usr/lib/
+
+    install -dm755 $pkgdir/usr/include
+    mv $_builddir/include/* $pkgdir/usr/include/
 
     #
     # Python
@@ -65,7 +68,7 @@ build() {
     # License
     #
 
-    install -Dm644 $startdir/src/Ice-$pkgver/ICE_LICENSE \
+    install -Dm644 $_builddir/ICE_LICENSE \
                 $pkgdir/usr/share/licenses/zeroc-ice/ICE_LICENSE
 
 }

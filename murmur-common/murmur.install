@@ -8,8 +8,8 @@ post_install() {
                             /var/log/murmur.log \
                             /var/run/murmur.pid
     echo
-    echo 'Set the SuperUser password with (as root):'
-    echo '   murmur -supw PASSWORD'
+    echo '==> Set the SuperUser password with (as root):'
+    echo '==>     murmur -supw PASSWORD'
 }
 
 post_upgrade() {

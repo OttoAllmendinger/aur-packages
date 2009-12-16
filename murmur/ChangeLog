@@ -1,4 +1,8 @@
 2009-12-15 Otto Allmendinger <otto.allmendinger@gmail.com>
+	* 1.2.0-5 :
+	simplified dependencies
+	increased visibility of install messages
+
 	* 1.2.0-4 :
 	added boost to makedepends
 

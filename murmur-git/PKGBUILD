@@ -4,13 +4,13 @@ _gitroot="git://mumble.git.sf.net/gitroot/mumble/mumble"
 _gitname="mumble"
 
 pkgname="murmur-git"
-pkgver="20091215"
-pkgrel=2
+pkgver=20091216
+pkgrel=1
 pkgdesc="The voice chat application server for Mumble (git version)"
 arch=("i686" "x86_64")
 url="http://mumble.sourceforge.net"
-makedepends=("git" "gcc" "make" "boost")
-depends=("qt>=4.4.0" "libcap" "protobuf" "avahi" "pcre" "dbus-core" "openssl")
+makedepends=("git" "boost")
+depends=("avahi" "openssl" "protobuf" "pcre" "qt>=4.4.0")
 conflicts=("murmur" "murmur-static" "murmur-ice")
 license=('GPL')
 
