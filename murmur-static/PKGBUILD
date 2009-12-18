@@ -3,7 +3,7 @@
 pkgname="murmur-static"
 pkgver=1.2.0
 _pkgresourcename="murmur-static_x86"
-pkgrel=2
+pkgrel=3
 pkgdesc="The voice chat application server for Mumble (static version)"
 arch=("i686")
 url="http://mumble.sourceforge.net"
@@ -11,29 +11,43 @@ license=("GPL")
 makedepends=("tar" "xz-utils")
 optdepends=("zeroc-ice: remote scripting support")
 conflicts=("murmur" "murmur-git" "murmur-ice")
-
-source=("http://downloads.sourceforge.net/sourceforge/mumble/"\
-"$_pkgresourcename-$pkgver.tar.lzma" "murmur.rc.d" "murmur.sh")
+backup=("etc/murmur.ini"
+	"etc/logrotate.d/murmur"
+	"etc/conf.d/murmur")
 install=("murmur.install")
-md5sums=("6c90402372da4661e0b85d691b0b20c9"
-         "e572449e26e3757c9d211b4cc0eb2bfd"
-         "f16e553656a374dc1a7d72ca90d96629")
+source=("http://downloads.sourceforge.net/sourceforge/mumble/$_pkgresourcename-$pkgver.tar.lzma" 
+    "murmur.rc.d" 
+    "murmur.logrotate.d"
+    "murmur.conf.d"
+    "murmurd.1.man")
+
+md5sums=('6c90402372da4661e0b85d691b0b20c9'
+         'b99061be67c54bf0bb4a061fd1280281'
+         'c56726cb267ead68f37f35c28e36e6fa'
+         '11c1cc875e8021739ec2087252cf0533'
+         '1c976acaa7657a0b319e20c1a269e732')
+
 
 build() {
     bsdtar -xf $_pkgresourcename-$pkgver.tar.lzma || return 1
 
     cd $startdir/src/$_pkgresourcename-$pkgver/
 
-    sed -e "s|database=|database=/var/lib/murmur/murmur.sqlite|" \
-        -e "s|#logfile=murmur.log|logfile=/var/log/murmur.log|" \
-        -e "s|#pidfile=|pidfile=/var/run/murmur.pid|" \
-        -i murmur.ini || return 1
-    
-    install -Dm755 murmur.x86 $pkgdir/usr/lib/murmur/murmur
-    install -Dm644 Murmur.ice $pkgdir/usr/lib/murmur/Murmur.ice
-    install -Dm644 murmur.ini $pkgdir/etc/murmur.ini
-    install -Dm644 README $pkgdir/usr/share/doc/murmur/README
-    install -Dm755 $startdir/murmur.sh $pkgdir/usr/sbin/murmur
-    install -Dm755 $startdir/murmur.rc.d $pkgdir/etc/rc.d/murmur
-    install -dm755 $pkgdir/var/lib/murmur
+	sed -e "s|database=|database=/var/lib/murmur/murmur.sqlite|" \
+	-e "s|dbus=session|#dbus=session|" \
+	-e "s|#logfile=murmur.log|logfile=/var/log/murmur/murmur.log|" \
+	-e "s|#pidfile=|pidfile=/var/run/murmur/murmur.pid|" \
+	-e "s|#uname=|uname=murmur|" \
+	-i murmur.ini || return 1
+
+	install -dm755 $pkgdir/var/lib/murmur
+	install -dm755 $pkgdir/var/log/murmur
+	install -dm755 $pkgdir/var/run/murmur
+	install -Dm755 murmur.x86 $pkgdir/usr/sbin/murmurd
+	install -Dm644 murmur.ini $pkgdir/etc/murmur.ini
+	install -Dm644 README $pkgdir/usr/share/doc/murmur/README
+	install -Dm644 $startdir/murmur.logrotate.d $pkgdir/etc/logrotate.d/murmur
+	install -Dm755 $startdir/murmur.rc.d $pkgdir/etc/rc.d/murmur
+	install -Dm644 $startdir/murmur.conf.d $pkgdir/etc/conf.d/murmur
+    install -Dm644 $startdir/murmurd.1.man $pkgdir/usr/share/man/man1/murmurd.1
 }

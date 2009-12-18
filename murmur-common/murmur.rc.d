@@ -1,13 +1,17 @@
 #!/bin/bash
 
+CONF=/etc/conf.d/murmur
+
 . /etc/rc.conf
 . /etc/rc.d/functions
 
-PID=$(pidof -o %PPID /usr/lib/murmur/murmur)
+[ -f $CONF ] && . $CONF
+
+PID=$(pidof -o %PPID /usr/sbin/murmurd)
 case "$1" in
   start)
     stat_busy "Starting murmur"
-    [ -z "$PID" ] && /usr/sbin/murmur
+    [ -z "$PID" ] && /usr/sbin/murmurd $PARAMS
     if [ $? -gt 0 ]; then
       stat_fail
     else

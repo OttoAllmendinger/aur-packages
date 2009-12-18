@@ -1,0 +1,1 @@
+../murmur-common/murmur.logrotate.d

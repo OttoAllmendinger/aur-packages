@@ -4,20 +4,25 @@ _gitroot="git://mumble.git.sf.net/gitroot/mumble/mumble"
 _gitname="mumble"
 
 pkgname="murmur-git"
-pkgver=20091216
+pkgver=20091218
 pkgrel=1
 pkgdesc="The voice chat application server for Mumble (git version)"
 arch=("i686" "x86_64")
 url="http://mumble.sourceforge.net"
 makedepends=("git" "boost")
-depends=("avahi" "openssl" "protobuf" "pcre" "qt>=4.4.0")
+depends=("avahi" "lsb-release" "protobuf" "qt>=4.4.0")
 conflicts=("murmur" "murmur-static" "murmur-ice")
 license=('GPL')
+backup=(etc/murmur.ini
+	etc/logrotate.d/murmur
+	etc/conf.d/murmur)
 
-source=("murmur.rc.d" "murmur.sh")
 install="murmur.install"
-md5sums=("e572449e26e3757c9d211b4cc0eb2bfd"
-         "f16e553656a374dc1a7d72ca90d96629")
+source=("murmur.rc.d" "murmur.conf.d" "murmur.logrotate.d")
+
+md5sums=('b99061be67c54bf0bb4a061fd1280281'
+         '11c1cc875e8021739ec2087252cf0533'
+         'c56726cb267ead68f37f35c28e36e6fa')
 
 build() {
     cd $srcdir
@@ -47,19 +52,23 @@ build() {
 
     make || return 1
 
-    sed -e "s|database=|database=/var/lib/murmur/murmur.sqlite|" \
-        -e "s|#logfile=murmur.log|logfile=/var/log/murmur.log|" \
-        -e "s|#pidfile=|pidfile=/var/run/murmur.pid|" \
+	sed -e "s|database=|database=/var/lib/murmur/murmur.sqlite|" \
+        -e "s|dbus=session|#dbus=session|" \
+        -e "s|#logfile=murmur.log|logfile=/var/log/murmur/murmur.log|" \
+        -e "s|#pidfile=|pidfile=/var/run/murmur/murmur.pid|" \
+        -e "s|#uname=|uname=murmur|" \
         -i scripts/murmur.ini || return 1
 
     # install
 
-    install -Dm755 release/murmurd $pkgdir/usr/lib/murmur/murmur
-    install -Dm644 src/murmur/Murmur.ice $pkgdir/usr/lib/murmur/Murmur.ice
-    install -Dm644 scripts/murmur.ini $pkgdir/etc/murmur.ini
-    install -Dm644 README $pkgdir/usr/share/doc/murmur/README
-    install -Dm755 $startdir/murmur.sh $pkgdir/usr/sbin/murmur
-    install -Dm755 $startdir/murmur.rc.d $pkgdir/etc/rc.d/murmur
-    install -dm755 $pkgdir/var/lib/murmur
-
+	install -dm755 $pkgdir/var/lib/murmur
+	install -dm755 $pkgdir/var/log/murmur
+	install -dm755 $pkgdir/var/run/murmur
+	install -Dm755 release/murmurd $pkgdir/usr/sbin/murmurd
+	install -Dm644 scripts/murmur.ini $pkgdir/etc/murmur.ini
+	install -Dm644 $startdir/murmur.logrotate.d $pkgdir/etc/logrotate.d/murmur
+	install -Dm755 $startdir/murmur.rc.d $pkgdir/etc/rc.d/murmur
+	install -Dm644 $startdir/murmur.conf.d $pkgdir/etc/conf.d/murmur
+	install -Dm644 README $pkgdir/usr/share/doc/murmur/README
+    install -Dm644 man/murmurd.1 $pkgdir/usr/share/man/man1/murmurd.1
 }

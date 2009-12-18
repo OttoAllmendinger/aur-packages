@@ -3,66 +3,109 @@
 pkgname="zeroc-ice"
 pkgver=3.3.1
 pkgrel=2
-pkgdesc="An object-oriented middleware that provides object-oriented Remote \
-Procedure Call functionality"
+pkgdesc="An object-oriented middleware that provides object-oriented RjMOTE \
+PROCEDURE CALL Functionality"
 arch=("i686" "x86_64")
 url="http://www.zeroc.com"
-license=("gpl" "custom: ICE license")
-makedepends=("gcc" "make")
+license=("GPL" "custom: ICE license")
+makedepends=("apache-ant" "ruby>=1.9.1" "ruby<1.9.2")
 depends=("db" "openssl" "expat" "mcpp" "python")
 source=("http://www.zeroc.com/download/Ice/3.3/Ice-$pkgver.tar.gz")
 md5sums=("1f37dfcec4662fcde030553fb447d064")
 
+#_bindings=("c++" "java" "php" "python")
+_bindings=("c++")
+
+_build_for() {
+    for b in $_bindings; do
+        [ "$b" = "$1" ] && return 0
+    done
+    return 1
+}
+
 build() {
-    # 
-    # Make
-    # 
-
-    cd $startdir/src/Ice-$pkgver/cpp/src
-    make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
-
-    cd $startdir/src/Ice-$pkgver/py
-    make embedded_runpath_prefix="" || return 1
-
-    #
-    # Build
-    #
 
     _builddir="$startdir/src/Ice-$pkgver-build"
-
-    #
-    # C++
-    #
-
-    cd $startdir/src/Ice-$pkgver/cpp
+    _datadir="$pkgdir/usr/share/Ice-$pkgver"
 
     rm -rf $_builddir
     mkdir $_builddir
     mkdir $_builddir/lib
     mkdir $_builddir/bin
-    make prefix=$_builddir embedded_runpath_prefix="" install || return 1
 
-    rm $_builddir/lib/*.class
+    mkdir -p $_datadir
 
-    install -dm755 $pkgdir/usr/bin
-    mv $_builddir/bin/* $pkgdir/usr/bin/
+    # this needs to be done always
 
-    install -dm755 $pkgdir/usr/lib
-    mv $_builddir/lib/* $pkgdir/usr/lib/
+    cd $startdir/src/Ice-$pkgver/cpp/src
+    make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
 
-    install -dm755 $pkgdir/usr/include
-    mv $_builddir/include/* $pkgdir/usr/include/
 
-    #
+    # C++
+
+    if _build_for c++; then
+        cd $startdir/src/Ice-$pkgver/cpp/src
+        make prefix=$_builddir embedded_runpath_prefix="" install
+
+        rm $_builddir/lib/*.class
+
+        install -dm755 $pkgdir/usr/bin
+        mv $_builddir/bin/* $pkgdir/usr/bin/
+
+        install -dm755 $pkgdir/usr/lib
+        mv $_builddir/lib/* $pkgdir/usr/lib/
+
+        install -dm755 $pkgdir/usr/include
+        mv $_builddir/include/* $pkgdir/usr/include/
+    fi
+
     # Python
+
+    if _build_for python; then
+        cd $startdir/src/Ice-$pkgver/py
+        make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
+        make prefix=$_builddir embedded_runpath_prefix="" install
+        install -dm755 "$pkgdir/usr/lib/python2.6/site-packages/"
+        mv $_builddir/python "$pkgdir/usr/lib/python2.6/site-packages/Ice"
+        cp -p $startdir/ice.pth "$pkgdir/usr/lib/python2.6/site-packages/"
+    fi
+
+    # PHP
+
+    if _build_for php; then
+        cd $startdir/src/Ice-$pkgver/php
+
+        # Patching source (thanks to Asaru)
+        sed -i "s/ZVAL_ADDREF/Z_ADDREF_P/" src/IcePHP/Marshal.cpp || return 1
+
+        make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
+        make prefix=$_builddir embedded_runpath_prefix="" install
+        install -Dm755 $_builddir/lib/IcePHP.so $pkgdir/usr/lib/IcePHP.so
+    fi
+
+    # Java
+
+    if _build_for java; then
+        cd $startdir/src/Ice-$pkgver/java
+
+        for jpkg in "jgoodies-looks" "jgoodies-forms" "berkeleydb" "proguard"; do
+            CLASSPATH="$CLASSPATH:/usr/share/java/$jpkg/$jpkg.jar"
+        done
+
+        ant jar || return 1
+
+        ant -Dprefix=$_builddir install
+
+        mkdir -p "$pkgdir/usr/share/java/zeroc-ice/"
+        cp $_builddir/lib/* "$pkgdir/usr/share/java/zeroc-ice/"
+    fi
+
+
+    #
+    # Slice files
     #
 
-    cd $startdir/src/Ice-$pkgver/py
-    make prefix=$_builddir embedded_runpath_prefix="" install || return 1
-    install -dm755 "$pkgdir/usr/lib/python2.6/site-packages/"
-    mv $_builddir/python "$pkgdir/usr/lib/python2.6/site-packages/Ice"
-    cp -p $startdir/ice.pth "$pkgdir/usr/lib/python2.6/site-packages/"
-
+    cp -r $_builddir/slice $_datadir/slice
 
     #
     # License

@@ -1,0 +1,49 @@
+# Contributor: Otto Allmendinger <otto.allmendinger@googlemail.com>
+
+pkgname="murmur"
+pkgver="1.2.0"
+pkgrel=5
+pkgdesc="The voice chat application server for Mumble"
+arch=("i686" "x86_64")
+url="http://mumble.sourceforge.net"
+makedepends=("boost")
+depends=("avahi" "openssl" "protobuf" "pcre" "qt>=4.4.0")
+conflicts=("murmur-ice" "murmur-static" "murmur-git")
+license=("GPL")
+
+source=("http://downloads.sourceforge.net/mumble/mumble-$pkgver.tar.gz" 
+        "murmur.rc.d" 
+        "murmur.sh")
+install="murmur.install"
+
+md5sums=('25872328c8bbc8282ad7ebdeacc0e8b6'
+         'e572449e26e3757c9d211b4cc0eb2bfd'
+         'f16e553656a374dc1a7d72ca90d96629')
+
+build() {
+    cd $srcdir/mumble-$pkgver
+
+    # build
+
+    msg "Starting make..."
+
+    qmake main.pro CONFIG+="no-client no-ice" || return 1
+
+    make || return 1
+
+    sed -e "s|database=|database=/var/lib/murmur/murmur.sqlite|" \
+        -e "s|#logfile=murmur.log|logfile=/var/log/murmur.log|" \
+        -e "s|#pidfile=|pidfile=/var/run/murmur.pid|" \
+        -i scripts/murmur.ini || return 1
+
+    # install
+
+    install -Dm755 release/murmurd $pkgdir/usr/lib/murmur/murmur
+    install -Dm644 src/murmur/Murmur.ice $pkgdir/usr/lib/murmur/Murmur.ice
+    install -Dm644 scripts/murmur.ini $pkgdir/etc/murmur.ini
+    install -Dm644 README $pkgdir/usr/share/doc/murmur/README
+    install -Dm755 $startdir/murmur.sh $pkgdir/usr/sbin/murmur
+    install -Dm755 $startdir/murmur.rc.d $pkgdir/etc/rc.d/murmur
+    install -dm755 $pkgdir/var/lib/murmur
+
+}

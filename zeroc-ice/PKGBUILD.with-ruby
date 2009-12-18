@@ -1,0 +1,133 @@
+# Contributor: Tom Burdick <tburdi1@uic.edu>
+# Contributor: Otto Allmendinger <otto.allmendinger@gmail.com>
+pkgname="zeroc-ice"
+pkgver=3.3.1
+pkgrel=2
+pkgdesc="An object-oriented middleware that provides object-oriented Remote \
+Procedure Call functionality"
+arch=("i686" "x86_64")
+url="http://www.zeroc.com"
+license=("GPL" "custom: ICE license")
+makedepends=("apache-ant" "ruby>=1.9.1" "ruby<1.9.2")
+depends=("db" "openssl" "expat" "mcpp" "python")
+source=("http://www.zeroc.com/download/Ice/3.3/Ice-$pkgver.tar.gz")
+md5sums=("1f37dfcec4662fcde030553fb447d064")
+
+build() {
+    # 
+    # Compile C++
+    # 
+
+    cd $startdir/src/Ice-$pkgver/cpp/src
+    make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
+
+    #
+    # Compile Python
+    #
+
+    cd $startdir/src/Ice-$pkgver/py
+    make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
+
+    #
+    # Compile PHP
+    #
+
+    cd $startdir/src/Ice-$pkgver/php
+
+    # Patching source (thanks to Asaru)
+    sed -i "s/ZVAL_ADDREF/Z_ADDREF_P/" src/IcePHP/Marshal.cpp || return 1
+
+    #make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
+
+    #
+    # Compile Ruby
+    #
+
+    cd $startdir/src/Ice-$pkgver/rb
+
+    _rb_incdir="/usr/include/ruby-1.9.1"
+    _rb_incdir_arch="/usr/include/ruby-1.9.1/$CARCH-linux"
+
+    # Patching makefile (see http://bugs.archlinux.org/task/16884)
+    sed -e "s|RUBY_FLAGS.*$|RUBY_FLAGS = -I$_rb_incdir -I$_rb_incdir_arch|" \
+        -i config/Make.rules
+
+    # Patching source according to 
+    # http://writequit.org/blog/?p=247
+
+    for f in $(find -type f); do
+        sed -e "s|RARRAY\(.*\)->ptr|RARRAY_PTR(\1)|"\
+            -e "s|RARRAY\(.*\)->len|RARRAY_LEN(\1)|"\
+            -e "s|RSTRING\(.*\)->ptr|RSTRING_PTR(\1)|"\
+            -e "s|RSTRING\(.*\)->len|RSTRING_LEN(\1)|"\
+            -i "${f}" || return 1
+    done;
+
+    make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
+
+    #
+    # Compile Java
+    #
+
+    cd $startdir/src/Ice-$pkgver/java
+
+    for jpkg in "jgoodies-looks" "jgoodies-forms" "berkeleydb" "proguard"; do
+        CLASSPATH="$CLASSPATH:/usr/share/java/$jpkg/$jpkg.jar"
+    done
+
+    ant jar || return 1
+
+
+
+    #
+    # Install
+    #
+
+    _builddir="$startdir/src/Ice-$pkgver-build"
+
+    #
+    # Install C++
+    #
+
+    cd $startdir/src/Ice-$pkgver/cpp
+
+    rm -rf $_builddir
+    mkdir $_builddir
+    mkdir $_builddir/lib
+    mkdir $_builddir/bin
+    make prefix=$_builddir embedded_runpath_prefix="" install
+
+    rm $_builddir/lib/*.class
+
+    install -dm755 $pkgdir/usr/bin
+    mv $_builddir/bin/* $pkgdir/usr/bin/
+
+    install -dm755 $pkgdir/usr/lib
+    mv $_builddir/lib/* $pkgdir/usr/lib/
+
+    install -dm755 $pkgdir/usr/include
+    mv $_builddir/include/* $pkgdir/usr/include/
+
+    #
+    # Install Python
+    #
+
+    cd $startdir/src/Ice-$pkgver/py
+    make prefix=$_builddir embedded_runpath_prefix="" install
+    install -dm755 "$pkgdir/usr/lib/python2.6/site-packages/"
+    mv $_builddir/python "$pkgdir/usr/lib/python2.6/site-packages/Ice"
+    cp -p $startdir/ice.pth "$pkgdir/usr/lib/python2.6/site-packages/"
+
+    #
+    # Install Java
+    #
+
+
+    #
+    # License
+    #
+
+    install -Dm644 $_builddir/ICE_LICENSE \
+                $pkgdir/usr/share/licenses/zeroc-ice/ICE_LICENSE
+
+}
