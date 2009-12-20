@@ -13,9 +13,9 @@ makedepends=("git" "boost")
 depends=("avahi" "lsb-release" "protobuf" "qt>=4.4.0")
 conflicts=("murmur" "murmur-static" "murmur-ice")
 license=('GPL')
-backup=(etc/murmur.ini
-	etc/logrotate.d/murmur
-	etc/conf.d/murmur)
+backup=("etc/murmur.ini"
+    "etc/logrotate.d/murmur"
+    "etc/conf.d/murmur")
 
 install="murmur.install"
 source=("murmur.rc.d" "murmur.conf.d" "murmur.logrotate.d")
@@ -52,7 +52,7 @@ build() {
 
     make || return 1
 
-	sed -e "s|database=|database=/var/lib/murmur/murmur.sqlite|" \
+    sed -e "s|database=|database=/var/lib/murmur/murmur.sqlite|" \
         -e "s|dbus=session|#dbus=session|" \
         -e "s|#logfile=murmur.log|logfile=/var/log/murmur/murmur.log|" \
         -e "s|#pidfile=|pidfile=/var/run/murmur/murmur.pid|" \
@@ -61,14 +61,14 @@ build() {
 
     # install
 
-	install -dm755 $pkgdir/var/lib/murmur
-	install -dm755 $pkgdir/var/log/murmur
-	install -dm755 $pkgdir/var/run/murmur
-	install -Dm755 release/murmurd $pkgdir/usr/sbin/murmurd
-	install -Dm644 scripts/murmur.ini $pkgdir/etc/murmur.ini
-	install -Dm644 $startdir/murmur.logrotate.d $pkgdir/etc/logrotate.d/murmur
-	install -Dm755 $startdir/murmur.rc.d $pkgdir/etc/rc.d/murmur
-	install -Dm644 $startdir/murmur.conf.d $pkgdir/etc/conf.d/murmur
-	install -Dm644 README $pkgdir/usr/share/doc/murmur/README
+    install -dm755 $pkgdir/var/lib/murmur
+    install -dm755 $pkgdir/var/log/murmur
+    install -dm755 $pkgdir/var/run/murmur
+    install -Dm755 release/murmurd $pkgdir/usr/sbin/murmurd
+    install -Dm644 scripts/murmur.ini $pkgdir/etc/murmur.ini
+    install -Dm644 $startdir/murmur.logrotate.d $pkgdir/etc/logrotate.d/murmur
+    install -Dm755 $startdir/murmur.rc.d $pkgdir/etc/rc.d/murmur
+    install -Dm644 $startdir/murmur.conf.d $pkgdir/etc/conf.d/murmur
+    install -Dm644 README $pkgdir/usr/share/doc/murmur/README
     install -Dm644 man/murmurd.1 $pkgdir/usr/share/man/man1/murmurd.1
 }
