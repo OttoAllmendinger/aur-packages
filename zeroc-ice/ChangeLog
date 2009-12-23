@@ -2,7 +2,6 @@
 
 	* 3.3.1-2 :
 
-	Added cpp and python support since these two compile fine and without many
-	dependencies. 
+	Added support for: c++ java python php
 
 	Ruby support fails because of this bug: http://bugs.archlinux.org/task/16884
