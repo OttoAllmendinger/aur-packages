@@ -4,6 +4,7 @@ pkgname=jgoodies-forms
 pkgver=1.2.1
 pkgrel=2
 pkgdesc="JGoodies Java Interface Design Library"
+pkgdesc="a framework that helps you layout form-oriented Swing panels"
 arch=('i686' 'x86_64')
 url="http://www.jgoodies.com/index.html"
 license=('BSD')

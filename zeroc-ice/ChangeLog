@@ -1,7 +1,10 @@
 2009-12-15 Otto Allmendinger <otto.allmendinger@gmail.com>
+	* 3.3.1-3:
+
+	Fixed dependency issues
 
 	* 3.3.1-2 :
 
-	Added support for: c++ java python php
+	Fixed support for: c++ java python php
 
 	Ruby support fails because of this bug: http://bugs.archlinux.org/task/16884

@@ -2,16 +2,22 @@
 # Contributor: Otto Allmendinger <otto.allmendinger@gmail.com>
 pkgname="zeroc-ice"
 pkgver=3.3.1
-pkgrel=2
-pkgdesc="An object-oriented middleware that provides object-oriented RjMOTE \
-PROCEDURE CALL Functionality"
+pkgrel=3
+pkgdesc="An object-oriented middleware that provides object-oriented Remote \
+Procedure Call functionality"
 arch=("i686" "x86_64")
 url="http://www.zeroc.com"
 license=("GPL" "custom: ICE license")
 makedepends=("apache-ant")
-depends=("db" "openssl" "expat" "mcpp" "python" "java-environment" "php")
-source=("http://www.zeroc.com/download/Ice/3.3/Ice-$pkgver.tar.gz")
-md5sums=("1f37dfcec4662fcde030553fb447d064")
+depends=("db" "openssl" "expat" "mcpp" "python" "php" 
+            "java-berkeleydb>=4.8.24-2"
+            "jgoodies-forms>=1.2.1-2"
+            "jgoodies-looks")
+source=("http://www.zeroc.com/download/Ice/3.3/Ice-$pkgver.tar.gz"
+        "ice.pth")
+
+md5sums=('1f37dfcec4662fcde030553fb447d064'
+         '5e1e1befd5cbd5262ec47770f591bd14')
 
 build() {
 

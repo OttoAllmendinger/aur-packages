@@ -8,7 +8,7 @@ pkgdesc="The voice chat application server for Mumble (ICE support)"
 arch=('i686' 'x86_64')
 url="http://mumble.sourceforge.net"
 license=('GPL')
-depends=('avahi' 'lsb-release' 'protobuf' 'qt>=4.4.0' 'zeroc-ice')
+depends=('avahi' 'lsb-release' 'protobuf' 'qt>=4.4.0' 'zeroc-ice>=3.3.1-3')
 makedepends=('boost')
 conflicts=('murmur' 'murmur-static' 'murmur-git')
 backup=("etc/murmur.ini"
