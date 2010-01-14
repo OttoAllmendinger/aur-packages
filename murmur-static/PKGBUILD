@@ -1,9 +1,9 @@
 # Contributor: Otto Allmendinger <otto.allmendinger at googlemail dot com>
 
 pkgname="murmur-static"
-pkgver=1.2.0
+pkgver=1.2.1
 _pkgresourcename="murmur-static_x86"
-pkgrel=3
+pkgrel=1
 pkgdesc="The voice chat application server for Mumble (static version)"
 arch=("i686")
 url="http://mumble.sourceforge.net"
@@ -21,12 +21,11 @@ source=("http://downloads.sourceforge.net/sourceforge/mumble/$_pkgresourcename-$
     "murmur.conf.d"
     "murmurd.1.man")
 
-md5sums=('6c90402372da4661e0b85d691b0b20c9'
+md5sums=('0289fdc1e8fc7c0ed11c0fac51e05466'
          'b99061be67c54bf0bb4a061fd1280281'
          'c56726cb267ead68f37f35c28e36e6fa'
          '11c1cc875e8021739ec2087252cf0533'
          '1c976acaa7657a0b319e20c1a269e732')
-
 
 build() {
     bsdtar -xf $_pkgresourcename-$pkgver.tar.lzma || return 1

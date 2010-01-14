@@ -2,8 +2,8 @@
 # Contributor: Malte Rabenseifner <malte@zearan.de> 
 
 pkgname=murmur
-pkgver=1.2.0
-pkgrel=8
+pkgver=1.2.1
+pkgrel=1
 pkgdesc="The voice chat application server for Mumble"
 arch=('i686' 'x86_64')
 url="http://mumble.sourceforge.net"
@@ -22,7 +22,7 @@ source=("http://downloads.sourceforge.net/mumble/mumble-$pkgver.tar.gz"
     "murmur.logrotate.d"
 )
 
-md5sums=('25872328c8bbc8282ad7ebdeacc0e8b6'
+md5sums=('94b59aef3233b91705fa8cfcdd04d3e1'
          'b99061be67c54bf0bb4a061fd1280281'
          '11c1cc875e8021739ec2087252cf0533'
          'eddea4cdbd0bde4b960a67e16b5d5478'
