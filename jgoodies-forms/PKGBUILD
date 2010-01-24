@@ -1,5 +1,5 @@
-# Maintainer: Tom Burdick <thomas.burdick@gmail.com>
-# Contributor: Otto Allmendinger <otto.allmendinger@gmail.com>
+# Maintainer: Otto Allmendinger <otto.allmendinger@googlemail.com>
+
 pkgname=jgoodies-forms
 pkgver=1.2.1
 pkgrel=2

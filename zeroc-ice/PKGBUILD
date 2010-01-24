@@ -1,5 +1,5 @@
-# Maintainer: Tom Burdick <tburdi1@uic.edu>
-# Contributor: Otto Allmendinger <otto.allmendinger@gmail.com>
+# Maintainer: Otto Allmendinger <otto.allmendinger@googlemail.com>
+
 pkgname="zeroc-ice"
 pkgver=3.3.1
 pkgrel=3

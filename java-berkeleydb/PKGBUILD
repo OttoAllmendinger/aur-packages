@@ -1,5 +1,4 @@
-# Maintainer: Tom Burdick <tburdi1@uic.edu>
-# Contributor: Otto Allmendinger <otto.allmendinger@googlemail.com>
+# Maintainer: Otto Allmendinger <otto.allmendinger@googlemail.com>
 pkgname=java-berkeleydb
 pkgver=4.8.24
 pkgrel=2
