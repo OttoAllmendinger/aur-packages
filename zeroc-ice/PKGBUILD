@@ -23,10 +23,15 @@ build() {
 
     _builddir="${srcdir}/Ice-$pkgver-build"
     _datadir="${pkgdir}/usr/share/Ice-$pkgver"
+    if [ $CARCH = "i686" ]; then
+        _libdir=${_builddir}/lib
+    else
+        _libdir=${_builddir}/lib64
+    fi
 
     rm -rf ${_builddir}
     mkdir ${_builddir}
-    mkdir ${_builddir}/lib
+    mkdir ${_libdir} -p
     mkdir ${_builddir}/bin
 
     mkdir -p ${_datadir}
@@ -46,13 +51,13 @@ build() {
     cd ${startdir}/src/Ice-$pkgver/cpp
     make prefix=${_builddir} embedded_runpath_prefix="" install
 
-    mv ${_builddir}/lib/ImportKey.class ${_datadir}
+    mv ${_libdir}/ImportKey.class ${_datadir}
 
     install -dm755 ${pkgdir}/usr/bin
     mv ${_builddir}/bin/* ${pkgdir}/usr/bin/
 
     install -dm755 ${pkgdir}/usr/lib
-    mv ${_builddir}/lib/* ${pkgdir}/usr/lib/
+    mv ${_libdir}/* ${pkgdir}/usr/lib/
 
     install -dm755 ${pkgdir}/usr/include
     mv ${_builddir}/include/* ${pkgdir}/usr/include/
@@ -96,7 +101,7 @@ build() {
     ant -Dprefix=${_builddir} install
 
     mkdir -p "${pkgdir}/usr/share/java/zeroc-ice/"
-    cp ${_builddir}/lib/* "${pkgdir}/usr/share/java/zeroc-ice/"
+    cp ${_libdir}/* "${pkgdir}/usr/share/java/zeroc-ice/"
 
 
 
