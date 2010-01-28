@@ -2,7 +2,7 @@
 
 pkgname="zeroc-ice"
 pkgver=3.3.1
-pkgrel=4
+pkgrel=5
 pkgdesc="An object-oriented middleware that provides object-oriented Remote \
 Procedure Call functionality"
 arch=("i686" "x86_64")
@@ -95,6 +95,8 @@ build() {
     for jpkg in "jgoodies-looks" "jgoodies-forms" "berkeleydb" "proguard"; do
         CLASSPATH="$CLASSPATH:/usr/share/java/$jpkg/$jpkg.jar"
     done
+
+    export CLASSPATH
 
     ant jar || return 1
 
