@@ -6,7 +6,6 @@
 	* 1.2.1-1:
 	bump to version 1.2.1
 
-2009-12-18 Otto Allmendinger <otto.allmendinger@googlemail.com>
-	* 1.2.0-3 :
-	incorporated all the changes from murmur package (see murmur package
-	changelog)
+2009-12-24 Otto Allmendinger <otto.allmendinger@googlemail.com>
+	* 1.2.0-1:
+	Initial release
