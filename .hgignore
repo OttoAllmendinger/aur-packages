@@ -3,3 +3,5 @@ syntax: glob
 src*
 pkg*
 *.gz
+*.bz2
+*.lzma
