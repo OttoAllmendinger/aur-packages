@@ -1,8 +1,12 @@
-2010-01-9 Otto Allmendinger <otto.allmendinger@googlemail.com>
+2010-02-11 Otto Allmendinger <otto.allmendinger@googlemail.com>
+	* 1.2.2-1:
+	bump to version 1.2.2
+
+2010-01-09 Otto Allmendinger <otto.allmendinger@googlemail.com>
 	* 1.2.1-1:
 	bump to version 1.2.1
 
-2009-12-18 Otto Allmendinger <otto.allmendinger@gmail.com>
+2009-12-18 Otto Allmendinger <otto.allmendinger@googlemail.com>
 	* 1.2.0-8:
 	included dbus configuration file, changed default dbus settings
 
@@ -18,7 +22,7 @@
 	added some files to backup array
 	added logrotate configuration file
 
-2009-12-15 Otto Allmendinger <otto.allmendinger@gmail.com>
+2009-12-15 Otto Allmendinger <otto.allmendinger@googlemail.com>
 	* 1.2.0-5 :
 	simplified dependencies
 	increased visibility of install messages

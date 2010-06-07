@@ -4,3 +4,5 @@ src*
 pkg*
 *.gz
 *.run
+*.bz2
+*.lzma
