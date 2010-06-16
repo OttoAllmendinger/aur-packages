@@ -3,13 +3,13 @@
 
 pkgname=adobe-air-sdk
 pkgver=1.5.3
-pkgrel=1
+pkgrel=2
 pkgdesc="Adobe Air Software Development Kit and Runtime Environment"
 arch=('i686' 'x86_64')
 url="http://get.adobe.com/air/"
 license=('custom')
 source=('http://airdownload.adobe.com/air/lin/download/latest/AdobeAIRSDK.tbz2')
-md5sums=('02a0e83436bfff1d03bb8807c87f5dd8')
+md5sums=('0954505df64e9f92779aa39c1835c279')
 install=${pkgname}.install
 
 build (){
