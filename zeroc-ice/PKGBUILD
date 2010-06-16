@@ -1,8 +1,8 @@
 # Maintainer: Otto Allmendinger <otto.allmendinger@googlemail.com>
 
 pkgname="zeroc-ice"
-pkgver=3.3.1
-pkgrel=5
+pkgver=3.4.0
+pkgrel=1
 pkgdesc="An object-oriented middleware that provides object-oriented Remote \
 Procedure Call functionality"
 arch=("i686" "x86_64")
@@ -13,11 +13,13 @@ depends=("db" "openssl" "expat" "mcpp" "python" "php"
             "java-berkeleydb>=4.8.24-2"
             "jgoodies-forms>=1.2.1-2"
             "jgoodies-looks")
-source=("http://www.zeroc.com/download/Ice/3.3/Ice-$pkgver.tar.gz"
-        "ice.pth")
+source=("http://www.zeroc.com/download/Ice/3.4/Ice-$pkgver.tar.gz"
+        "ice.pth"
+        "IceSSL-3.4.0.patch")
 
-md5sums=('1f37dfcec4662fcde030553fb447d064'
-         '5e1e1befd5cbd5262ec47770f591bd14')
+md5sums=('998b10627ade020cb00f5beb73efc0e0'
+         '5e1e1befd5cbd5262ec47770f591bd14'
+         '3ef700b08102efba0575389c3fa9b4ec')
 
 build() {
 
@@ -36,18 +38,23 @@ build() {
 
     mkdir -p ${_datadir}
 
+    # IceSSL patch
+
+    msg2 "Appying IceSSL patch..."
+    patch -p1 ${srcdir}/Ice-$pkgver/cpp/src/IceSSL/Instance.cpp < \
+        IceSSL-3.4.0.patch || return 1
 
 
     # this needs to be done always
 
     cd ${startdir}/src/Ice-$pkgver/cpp/src
     make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
-
-
+	
 
     # C++
 
-    echo "INSTALL C++"
+    msg2 "Installing C++"
+
     cd ${startdir}/src/Ice-$pkgver/cpp
     make prefix=${_builddir} embedded_runpath_prefix="" install
 
@@ -66,6 +73,8 @@ build() {
 
     # Python
 
+    msg2 "building Python bindings..."
+
     cd ${startdir}/src/Ice-$pkgver/py
     make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
     make prefix=${_builddir} embedded_runpath_prefix="" install
@@ -77,10 +86,9 @@ build() {
 
     # PHP
 
-    cd ${startdir}/src/Ice-$pkgver/php
+    msg2 "building PHP bindings..."
 
-    # Patching source (thanks to Asaru)
-    sed -i "s/ZVAL_ADDREF/Z_ADDREF_P/" src/IcePHP/Marshal.cpp || return 1
+    cd ${startdir}/src/Ice-$pkgver/php
 
     make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
     make prefix=${_builddir} embedded_runpath_prefix="" install
@@ -89,6 +97,8 @@ build() {
 
 
     # Java
+
+    msg2 "building Java bindings..."
 
     cd ${startdir}/src/Ice-$pkgver/java
 
@@ -108,6 +118,8 @@ build() {
 
 
     # Slice files
+
+    msg2 "copying Slice files..."
 
     cp -r ${_builddir}/slice ${_datadir}/slice
 
