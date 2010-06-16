@@ -1,0 +1,45 @@
+# Contributor: Otto Allmendinger <otto.allmendinger@gmail.com>
+pkgname=grooveshark-desktop
+pkgver=20100518.05
+pkgrel=1
+pkgdesc="Grooveshark desktop client for VIP users using adobe-air"
+arch=("i686" "x86_64")
+url="http://vip.grooveshark.com/summary"
+license=("unknown")
+depends=("adobe-air")
+source=(
+    "http://preview.grooveshark.com/desktop/install.air"
+    "grooveshark-desktop.sh" "grooveshark.desktop")
+
+md5sums=('518f50373c78f6d3c410231453322b1c'
+         'b29b998d00b73e254db3124a3dcb607d'
+         '5da56775f4123e3eaf6205c4bf7412ec')
+
+build() {
+    _builddir=${srcdir}/grooveshark-desktop-${pkgver}
+
+    rm -rf ${_builddir}
+    mkdir ${_builddir}
+
+
+    unzip "install.air" -d ${_builddir} > /dev/null || exit 1
+
+    cd ${srcdir}/
+
+    #install -d ${pkgdir}/usr/bin
+    #install -d ${pkgdir}/opt/${pkgname}
+    
+    ## main files
+    install -D install.air ${pkgdir}/opt/${pkgname}/grooveshark-desktop.air
+
+    ## desktop launcher
+    install -Dm644 "grooveshark.desktop" \
+        ${pkgdir}/usr/share/applications/grooveshark.desktop || exit 1
+
+    install -Dm644 ${_builddir}/icons/gs512.png \
+        ${pkgdir}/usr/share/pixmaps/grooveshark-desktop.png || exit 1
+
+    ## launch script
+    install -Dm755 "grooveshark-desktop.sh" \
+        ${pkgdir}/usr/bin/grooveshark-desktop
+}
