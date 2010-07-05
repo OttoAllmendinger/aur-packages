@@ -1,8 +1,8 @@
 # Maintainer: Otto Allmendinger <otto.allmendinger@googlemail.com>
 
 pkgname="zeroc-ice"
-pkgver=3.4.0
-pkgrel=1
+pkgver=3.4.1
+pkgrel=2
 pkgdesc="An object-oriented middleware that provides object-oriented Remote \
 Procedure Call functionality"
 arch=("i686" "x86_64")
@@ -13,13 +13,10 @@ depends=("db" "openssl" "expat" "mcpp" "python" "php"
             "java-berkeleydb>=4.8.24-2"
             "jgoodies-forms>=1.2.1-2"
             "jgoodies-looks")
-source=("http://www.zeroc.com/download/Ice/3.4/Ice-$pkgver.tar.gz"
-        "ice.pth"
-        "IceSSL-3.4.0.patch")
+source=("http://www.zeroc.com/download/Ice/3.4/Ice-$pkgver.tar.gz" "ice.pth" )
 
-md5sums=('998b10627ade020cb00f5beb73efc0e0'
-         '5e1e1befd5cbd5262ec47770f591bd14'
-         '3ef700b08102efba0575389c3fa9b4ec')
+md5sums=('3aae42aa47dec74bb258c1a1b2847a1a'
+        '5e1e1befd5cbd5262ec47770f591bd14' )
 
 build() {
 
@@ -38,13 +35,6 @@ build() {
 
     mkdir -p ${_datadir}
 
-    # IceSSL patch
-
-    msg2 "Appying IceSSL patch..."
-    patch -p1 ${srcdir}/Ice-$pkgver/cpp/src/IceSSL/Instance.cpp < \
-        IceSSL-3.4.0.patch || return 1
-
-
     # this needs to be done always
 
     cd ${startdir}/src/Ice-$pkgver/cpp/src
@@ -58,13 +48,13 @@ build() {
     cd ${startdir}/src/Ice-$pkgver/cpp
     make prefix=${_builddir} embedded_runpath_prefix="" install
 
-    mv ${_libdir}/ImportKey.class ${_datadir}
+    mv ${_builddir}/lib/ImportKey.class ${_datadir}
 
     install -dm755 ${pkgdir}/usr/bin
     mv ${_builddir}/bin/* ${pkgdir}/usr/bin/
 
     install -dm755 ${pkgdir}/usr/lib
-    mv ${_libdir}/* ${pkgdir}/usr/lib/
+    cp ${_libdir}/* ${pkgdir}/usr/lib/
 
     install -dm755 ${pkgdir}/usr/include
     mv ${_builddir}/include/* ${pkgdir}/usr/include/
@@ -92,7 +82,7 @@ build() {
 
     make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
     make prefix=${_builddir} embedded_runpath_prefix="" install
-    install -Dm755 ${_builddir}/lib/IcePHP.so ${pkgdir}/usr/lib/IcePHP.so
+    install -Dm755 ${_builddir}/php/IcePHP.so ${pkgdir}/usr/lib/IcePHP.so
 
 
 
@@ -103,11 +93,14 @@ build() {
     cd ${startdir}/src/Ice-$pkgver/java
 
     for jpkg in "jgoodies-looks" "jgoodies-forms" "berkeleydb" "proguard"; do
-        CLASSPATH="$CLASSPATH:/usr/share/java/$jpkg/$jpkg.jar"
+        for jar in /usr/share/java/$jpkg/*.jar; do
+            CLASSPATH=$CLASSPATH:$jar
+        done
     done
 
     export CLASSPATH
 
+    msg "classpath=${CLASSPATH}"
     ant jar || return 1
 
     ant -Dprefix=${_builddir} install
