@@ -1,8 +1,6 @@
-2010-04-15 Otto Allmendinger <otto.allmendinger@googlemail.com>
-	* 3.4.0-1:
-	Version bump
-	Applied IceSSL patch (thanks nema)
-
+2010-07-08 Otto Allmendinger <otto.allmendinger@googlemail.com>
+	* 3.3.1-6:
+	Fixed CLASSPATH again and added patch
 
 2009-12-28 Otto Allmendinger <otto.allmendinger@googlemail.com>
 	* 3.3.1-5:
