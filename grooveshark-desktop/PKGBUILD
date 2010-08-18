@@ -15,7 +15,6 @@ source=(
     "grooveshark-desktop.sh" "grooveshark.desktop")
 install=grooveshark-desktop.install
 
-
 md5sums=('922a73761d15a1f12cb70734e3031d0e'
          'b29b998d00b73e254db3124a3dcb607d'
          '5da56775f4123e3eaf6205c4bf7412ec')
