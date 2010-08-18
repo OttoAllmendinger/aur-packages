@@ -1,6 +1,9 @@
 # Contributor: Otto Allmendinger <otto.allmendinger@gmail.com>
+
+# latest version found at: http://preview.grooveshark.com/desktop/version.php
+
 pkgname=grooveshark-desktop
-pkgver=20100518.16
+pkgver=20100518.18
 pkgrel=1
 pkgdesc="Grooveshark desktop client for VIP users using adobe-air"
 arch=("i686" "x86_64")
@@ -8,22 +11,25 @@ url="http://vip.grooveshark.com/summary"
 license=("unknown")
 depends=("adobe-air" "hicolor-icon-theme" "xdg-utils")
 source=(
-    "http://preview.grooveshark.com/desktop/install.air"
+    "http://preview.grooveshark.com/desktop/GSDesktop_${pkgver}.air"
     "grooveshark-desktop.sh" "grooveshark.desktop")
 install=grooveshark-desktop.install
 
-md5sums=('27e5682e0d3784c2863cccc0aa909747'
+
+md5sums=('922a73761d15a1f12cb70734e3031d0e'
          'b29b998d00b73e254db3124a3dcb607d'
          '5da56775f4123e3eaf6205c4bf7412ec')
 
 build() {
     _builddir=${srcdir}/grooveshark-desktop-${pkgver}
+    _filename="GSDesktop_${pkgver}.air"
+
 
     rm -rf ${_builddir}
     mkdir ${_builddir}
 
 
-    unzip "install.air" -d ${_builddir} > /dev/null || exit 1
+    unzip ${_filename} -d ${_builddir} > /dev/null || exit 1
 
     cd ${srcdir}/
 
@@ -31,13 +37,13 @@ build() {
     #install -d ${pkgdir}/opt/${pkgname}
     
     ## main files
-    install -D install.air ${pkgdir}/opt/${pkgname}/grooveshark-desktop.air
+    install -D ${_filename} ${pkgdir}/opt/${pkgname}/grooveshark-desktop.air
 
     ## desktop launcher
     install -Dm644 "grooveshark.desktop" \
         ${pkgdir}/usr/share/applications/grooveshark.desktop || exit 1
 
-    for s in 16 24 32 48 128 256; do
+    for s in 16 32 48 128; do
         install -Dm644 ${_builddir}/icons/gs${s}.png \
             ${pkgdir}/usr/share/icons/hicolor/${s}x${s}/apps/grooveshark-desktop.png || exit 1
     done
