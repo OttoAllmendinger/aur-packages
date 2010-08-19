@@ -1,4 +1,4 @@
-# Contributor: Otto Allmendinger <otto.allmendinger@gmail.com>
+# Maintainer: Otto Allmendinger <otto.allmendinger@gmail.com>
 
 # latest version found at: http://preview.grooveshark.com/desktop/version.php
 
@@ -9,6 +9,7 @@ pkgdesc="Grooveshark desktop client for VIP users using adobe-air"
 arch=("i686" "x86_64")
 url="http://vip.grooveshark.com/summary"
 license=("unknown")
+makedepends=("unzip")
 depends=("adobe-air" "hicolor-icon-theme" "xdg-utils")
 source=(
     "http://preview.grooveshark.com/desktop/GSDesktop_${pkgver}.air"
