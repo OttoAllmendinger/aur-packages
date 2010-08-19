@@ -4,7 +4,7 @@
 
 pkgname=grooveshark-desktop
 pkgver=20100518.18
-pkgrel=1
+pkgrel=2
 pkgdesc="Grooveshark desktop client for VIP users using adobe-air"
 arch=("i686" "x86_64")
 url="http://vip.grooveshark.com/summary"
