@@ -22,26 +22,28 @@ _gitname='minitube'
 
 build() {
     cd $srcdir
-  
-      msg "Connecting to GIT server...."
-  if [ -d ${srcdir}/$_gitname ] ; then
-      cd $_gitname && git pull origin
-      msg "The local files are updated."
-  else
-      git clone $_gitroot
-  fi
-      msg "GIT checkout done or server timeout"
-      
-      msg "Starting make..."
-  
-  if [ -d ${srcdir}/${_gitname}-build ]; then
-      rm -rf ${srcdir}/${_gitname}-build
-  fi
+
+    msg "Connecting to GIT server...."
+
+    if [ -d ${srcdir}/$_gitname ] ; then
+        cd $_gitname && git pull origin
+        msg "The local files are updated."
+    else
+        git clone $_gitroot
+    fi
+    msg "GIT checkout done or server timeout"
+
+    msg "Starting make..."
+
+    if [ -d ${srcdir}/${_gitname}-build ]; then
+        rm -rf ${srcdir}/${_gitname}-build
+    fi
+
     cp -r ${srcdir}/$_gitname ${srcdir}/${_gitname}-build
     cd ${srcdir}/${_gitname}-build
 
     qmake PREFIX=/usr || return 1
     make INSTALL_ROOT="$pkgdir" install || return 1
-        
+
 }
 
