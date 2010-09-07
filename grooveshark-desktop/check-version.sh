@@ -14,7 +14,8 @@ latest_version=$(curl -so- ${grooveshark_version_url} | \
 
 if [ ${latest_version} != ${aur_version} ]; then
     echo "new version - mailing message"
-    echo "new grooveshark version: ${latest_version}" | mail otto
+    echo "New grooveshark version: ${latest_version}" | \
+        mail -s "grooveshark-desktop update" otto
 else
     echo "aur version is latest version"
 fi
