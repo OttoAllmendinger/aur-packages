@@ -1,8 +1,8 @@
 # Maintainer: Otto Allmendinger <otto.allmendinger@gmail.com>
 
 pkgname=grooveshark-desktop
-pkgver=20100831.08
-pkgrel=:
+pkgver=20100831.09
+pkgrel=1
 pkgdesc="Grooveshark desktop client for VIP users using adobe-air"
 arch=("i686" "x86_64")
 url="http://vip.grooveshark.com/summary"
@@ -24,7 +24,7 @@ install=grooveshark-desktop.install
 
 
 
-md5sums=('60bb6cb9f21f92df12583dd5f5cecf24'
+md5sums=('ee5c8c669de0980d31d1047356e5b30a'
          'b29b998d00b73e254db3124a3dcb607d'
          '5da56775f4123e3eaf6205c4bf7412ec')
 
