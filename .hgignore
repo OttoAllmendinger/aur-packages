@@ -1,9 +1,0 @@
-syntax: glob
-
-src*
-pkg*
-*.gz
-*.xz
-*.run
-*.bz2
-*.lzma
