@@ -9,17 +9,24 @@ arch=("i686" "x86_64")
 url="http://www.zeroc.com"
 license=("GPL" "custom: ICE license")
 makedepends=("apache-ant")
-depends=("db" "openssl" "expat" "mcpp" "python" "php" 
-            "java-berkeleydb>=4.8.24-2"
+depends=("db" "openssl" "expat" "mcpp" "python2" "php" 
+            "java-berkeleydb>=5.1"
             "jgoodies-forms>=1.2.1-2"
             "jgoodies-looks")
-source=("http://www.zeroc.com/download/Ice/3.4/Ice-$pkgver.tar.gz" "ice.pth" )
+source=(
+    "http://www.zeroc.com/download/Ice/3.4/Ice-$pkgver.tar.gz" 
+    "ice.pth" 
+    "bdb5.patch"
+    "python27.patch" )
 
 md5sums=('3aae42aa47dec74bb258c1a1b2847a1a'
-        '5e1e1befd5cbd5262ec47770f591bd14' )
+         '5e1e1befd5cbd5262ec47770f591bd14'
+         '44f0ea80b2fffcad7db20dc32cc5b89b'
+         '05c8c1ea3db8042dbfe38b79c6c32bcb')
 
 build() {
 
+    _makedir="${srcdir}/Ice-$pkgver"
     _builddir="${srcdir}/Ice-$pkgver-build"
     _datadir="${pkgdir}/usr/share/Ice-$pkgver"
     if [ $CARCH = "i686" ]; then
@@ -27,6 +34,11 @@ build() {
     else
         _libdir=${_builddir}/lib64
     fi
+
+    msg2 "applying patches..."
+
+    patch "${_makedir}/cpp/src/Freeze/MapI.cpp" < "${startdir}/bdb5.patch"
+    patch "${_makedir}/py/config/Make.rules" < "${startdir}/python27.patch"
 
     rm -rf ${_builddir}
     mkdir ${_builddir}
@@ -37,15 +49,14 @@ build() {
 
     # this needs to be done always
 
-    cd ${startdir}/src/Ice-$pkgver/cpp/src
-    make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
+    cd ${_makedir}/cpp/src
+    make OPTIMIZE=yes embedded_runpath_prefix=""
 	
-
     # C++
 
     msg2 "Installing C++"
 
-    cd ${startdir}/src/Ice-$pkgver/cpp
+    cd ${_makedir}/cpp
     make prefix=${_builddir} embedded_runpath_prefix="" install
 
 
@@ -64,8 +75,8 @@ build() {
 
     msg2 "building Python bindings..."
 
-    cd ${startdir}/src/Ice-$pkgver/py
-    make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
+    cd ${_makedir}/py
+    make OPTIMIZE=yes embedded_runpath_prefix=""
     make prefix=${_builddir} embedded_runpath_prefix="" install
     install -dm755 "${pkgdir}/usr/lib/python2.6/site-packages/"
     mv ${_builddir}/python "${pkgdir}/usr/lib/python2.6/site-packages/Ice"
@@ -77,9 +88,9 @@ build() {
 
     msg2 "building PHP bindings..."
 
-    cd ${startdir}/src/Ice-$pkgver/php
+    cd ${_makedir}/php
 
-    make OPTIMIZE=yes embedded_runpath_prefix="" || return 1
+    make OPTIMIZE=yes embedded_runpath_prefix=""
     make prefix=${_builddir} embedded_runpath_prefix="" install
     install -Dm755 ${_builddir}/php/IcePHP.so ${pkgdir}/usr/lib/IcePHP.so
 
@@ -89,7 +100,7 @@ build() {
 
     msg2 "building Java bindings..."
 
-    cd ${startdir}/src/Ice-$pkgver/java
+    cd ${_makedir}/java
 
     for jpkg in "jgoodies-looks" "jgoodies-forms" "berkeleydb" "proguard"; do
         for jar in /usr/share/java/$jpkg/*.jar; do
@@ -100,13 +111,12 @@ build() {
     export CLASSPATH
 
     msg "classpath=${CLASSPATH}"
-    ant jar || return 1
+    ant jar
 
     ant -Dprefix=${_builddir} install
 
     mkdir -p "${pkgdir}/usr/share/java/zeroc-ice/"
     cp ${_libdir}/* "${pkgdir}/usr/share/java/zeroc-ice/"
-
 
 
     # Slice files
@@ -122,7 +132,7 @@ build() {
 
     # License
 
-    install -Dm644 ${srcdir}/Ice-$pkgver/ICE_LICENSE \
+    install -Dm644 ${_makedir}/ICE_LICENSE \
                 ${pkgdir}/usr/share/licenses/zeroc-ice/ICE_LICENSE
 
 }
