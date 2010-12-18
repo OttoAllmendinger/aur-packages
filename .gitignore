@@ -10,3 +10,4 @@ pkg/
 *.gz
 *.bz2
 *.part
+*.bin
