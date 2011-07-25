@@ -1,14 +1,20 @@
 # Maintainer: Otto Allmendinger <otto.allmendinger@googlemail.com>
 
+_use_zeroc_ice="1"
 
 pkgname="murmur-git"
-pkgver=20091218
+pkgver=20110725
 pkgrel=1
 pkgdesc="The voice chat application server for Mumble (git version)"
 arch=("i686" "x86_64")
 url="http://mumble.sourceforge.net"
 license=('GPL')
 depends=("avahi" "lsb-release" "protobuf" "qt>=4.4.0")
+
+if [[ ${_use_zeroc_ice} ]]; then
+    depends=( "${depends[@]}" zeroc-ice )
+fi
+
 makedepends=("git" "boost")
 conflicts=("murmur" "murmur-static" "murmur-ice")
 backup=("etc/murmur.ini"
@@ -54,7 +60,11 @@ build() {
 
     msg "Starting make..."
 
-    qmake main.pro CONFIG+="no-client no-ice"
+    if [[ $_use_zeroc_ice ]]; then
+        qmake main.pro CONFIG+="no-client"
+    else
+        qmake main.pro CONFIG+="no-client no-ice"
+    fi
 
     make || return 1
 
@@ -64,8 +74,10 @@ build() {
         -e "s|#pidfile=|pidfile=/var/run/murmur/murmur.pid|" \
         -e "s|#uname=|uname=murmur|" \
         -i scripts/murmur.ini || return 1
+}
 
-    # install
+package() {
+    cd "$srcdir/$_gitname-build"
 
     install -dm755 ${pkgdir}/var/lib/murmur
     install -dm755 ${pkgdir}/var/log/murmur
@@ -80,4 +92,8 @@ build() {
                     ${pkgdir}/etc/logrotate.d/murmur
     install -Dm644 README ${pkgdir}/usr/share/doc/murmur/README
     install -Dm644 man/murmurd.1 ${pkgdir}/usr/share/man/man1/murmurd.1
+
+    if [[ $_use_zeroc_ice ]]; then
+        install -Dm644 src/murmur/Murmur.ice ${pkgdir}/usr/share/murmur/Murmur.ice
+    fi
 }
