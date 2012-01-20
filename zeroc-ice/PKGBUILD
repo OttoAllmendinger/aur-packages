@@ -84,7 +84,7 @@ _build_java() {
 
     cd ${_makedir}/java
 
-    for jpkg in "jgoodies-looks" "jgoodies-forms" "berkeleydb" "proguard"; do
+    for jpkg in "jgoodies-looks" "jgoodies-looks/lib" "jgoodies-forms" "berkeleydb"; do
         for jar in /usr/share/java/$jpkg/*.jar; do
             CLASSPATH=$CLASSPATH:$jar
         done
