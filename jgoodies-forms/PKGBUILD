@@ -9,11 +9,14 @@ arch=('i686' 'x86_64')
 url="http://www.jgoodies.com/index.html"
 license=('BSD')
 depends=(java-runtime)
-source=('http://www.jgoodies.com/download/libraries/forms/jgoodies-forms-1_4_1.zip')
+source=("http://www.jgoodies.com/download/libraries/forms/${pkgname}-${pkgver//./_}.zip")
 
 build() {
+    install -dm755 $pkgdir/usr/share/java
     cd "$srcdir/$pkgname-$pkgver"
-    install -D LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-    install -D $pkgname-$pkgver.jar "$pkgdir/usr/share/java/$pkgname/$pkgname.jar"
+    cp -R $srcdir/$pkgname-$pkgver $pkgdir/usr/share/java/$pkgname
+    chmod -R u+rwX,g+rX,o+rX $pkgdir/usr/share/java/$pkgname
+    install -Dm644 $srcdir/$pkgname-$pkgver/LICENSE.txt $pkgdir/usr/share/licenses/$pkgname/license.txt
+    install -Dm644 $srcdir/$pkgname-$pkgver/LICENSE.txt $pkgdir/usr/share/licenses/$pkgname/license.txt
 }
 md5sums=('33993aed149bc4be7dda74cbaa8653a5')
