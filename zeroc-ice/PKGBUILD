@@ -47,7 +47,10 @@ _build_common() {
     msg  "to build this package"
 
     cd ${_makedir}/cpp/src
-    make OPTIMIZE=yes embedded_runpath_prefix=""
+    #make -d OPTIMIZE=yes embedded_runpath_prefix="" CXXFLAGS="-std=gnu++11 -I/usr/local/lib/gcc47/include/c++ -Wno-deprecated-declarations"
+    _incpath="/usr/lib/gcc/i686-pc-linux-gnu/4.7.0/include/"
+    make OPTIMIZE=yes embedded_runpath_prefix="" \
+        CXXFLAGS="-std=gnu++11 -I$_incpath -Wno-deprecated-declarations"
 }
 
 _build_cpp() {
@@ -136,8 +139,19 @@ _package_slice() {
 
 build() {
     msg2 "applying patches..."
-    patch "${_makedir}/cpp/include/Ice/Config.h" < "${startdir}/gcc46.patch"
+
+
+    #patch "${_makedir}/cpp/include/Ice/Config.h" < "${startdir}/gcc46.patch"
+    #patch "${_makedir}/cpp/src/Freeze/MapI.cpp" < "${startdir}/bdb5.patch"
+
+
+    #TODO normalize
     patch "${_makedir}/cpp/src/Freeze/MapI.cpp" < "${startdir}/bdb5.patch"
+
+    cd "${_makedir}"
+
+    #patch -p0 < "${startdir}/gcc46.patch"
+    patch -p0 < "${startdir}/ice-for-clang.patch"
 
     rm -rf ${_builddir}
     mkdir ${_builddir}
