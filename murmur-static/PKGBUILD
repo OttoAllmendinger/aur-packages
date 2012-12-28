@@ -4,7 +4,7 @@
 pkgname="murmur-static"
 pkgver=1.2.3
 _pkgresourcename="murmur-static_x86"
-pkgrel=2
+pkgrel=4
 pkgdesc="The voice chat application server for Mumble (static version)"
 arch=("i686" "x86_64")
 url="http://mumble.sourceforge.net"
