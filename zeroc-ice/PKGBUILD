@@ -1,7 +1,8 @@
 # Maintainer: Otto Allmendinger <otto.allmendinger@gmail.com>
 # https://github.com/OttoAllmendinger/aur-packages
 
-pkgname=("zeroc-ice"
+pkgname="zeroc-ice"
+true && pkgname=("zeroc-ice"
     "zeroc-ice-php"
     "zeroc-ice-python2"
     "zeroc-ice-python"
@@ -14,7 +15,8 @@ Procedure Call functionality"
 arch=("i686" "x86_64")
 url="http://www.zeroc.com"
 license=("GPL" "custom: ICE license")
-makedepends=("apache-ant" "mcpp" "php" "python" "python2" "java" "openssl" "expat" "db")
+makedepends=("apache-ant" "mcpp" "php" \
+    "python" "python2" "java-environment" "openssl" "expat" "db")
 depends_zeroc_ice=("db" "openssl" "expat")
 depends_zeroc_ice_python2=("zeroc-ice" "python2")
 depends_zeroc_ice_python=("zeroc-ice" "python")
