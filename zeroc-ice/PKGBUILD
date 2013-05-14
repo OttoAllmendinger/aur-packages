@@ -4,7 +4,7 @@
 pkgname="zeroc-ice"
 true && pkgname=("zeroc-ice"
     "zeroc-ice-php"
-#   "zeroc-ice-python2"
+    "zeroc-ice-python2"
     "zeroc-ice-python"
     "zeroc-ice-java")
 pkgver=3.5.0
@@ -81,7 +81,7 @@ _build_python2() {
     cp -r ${_makedir}/py ${_makedir}/py2
     cd ${_makedir}/py2
     make PYTHON_VERSION=python2.7 OPTIMIZE=yes prefix=${srcdir}/${_builddir} \
-        embedded_runpath_prefix="" CXXFLAGS=-Wno-format install
+        embedded_runpath_prefix="" CXXFLAGS="-Wno-format -fPIC" install
 }
 
 _package_python2() {
@@ -100,7 +100,7 @@ _build_python() {
     cp -r ${_makedir}/py ${_makedir}/py3
     cd ${_makedir}/py3
     make PYTHON_VERSION=python3.3 OPTIMIZE=yes prefix=${srcdir}/${_builddir} \
-        embedded_runpath_prefix="" install
+        embedded_runpath_prefix="" CXXFLAGS="-Wno-format -fPIC" install
 }
 
 _package_python() {
@@ -150,14 +150,14 @@ _build_java() {
 
     export CLASSPATH
 
-    ant -Dprefix=${srcdir}/${_builddir} install
+    ant -Dprefix=${srcdir}/${_jardir} install
 }
 
 _package_java() {
     cd ${srcdir}
 
     mkdir -p ${pkgdir}/usr/share/java/zeroc-ice/
-    for jarfile in ${_jardir}/*.jar ; do
+    for jarfile in ${_jardir}/lib/*.jar ; do
         install -Dm644 ${jarfile} ${pkgdir}/usr/share/java/zeroc-ice/
     done
 }
@@ -185,6 +185,7 @@ build() {
     rm -rf ${_builddir}
     mkdir ${_builddir}
     mkdir ${_libdir}
+    mkdir ${_jardir}
     mkdir ${_builddir}/bin
 
     _build_common
