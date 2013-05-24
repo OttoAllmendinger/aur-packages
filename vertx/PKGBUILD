@@ -10,7 +10,7 @@ arch=("i686" "x86_64")
 url="http://vertx.io"
 license=("APACHE")
 depends=("java-environment>=7")
-source=("http://vertx.io/downloads/vert.x-${pkgver}.final.tar.gz"
+source=("http://vert-x.github.io/vertx-downloads/downloads/vert.x-${pkgver}.final.tar.gz"
   "vertx.profile.d.sh")
 
 build() {
